@@ -3,23 +3,32 @@
 #include "stdarg.h"
 
 void LCD_sendCmd( uint8_t data) {
-    HAL_GPIO_WritePin(RS_GPIO_Port, RS_Pin, GPIO_PIN_RESET);
+//    HAL_GPIO_WritePin(RS_GPIO_Port, RS_Pin, GPIO_PIN_RESET);
+	WRITE_PIN(RS_GPIO_Port, RS_Pin, 0);
     LCD_sendByte(data);
 }
 
 void LCD_sendChar(uint8_t data) {
-    HAL_GPIO_WritePin(RS_GPIO_Port, RS_Pin, GPIO_PIN_SET);
+//    HAL_GPIO_WritePin(RS_GPIO_Port, RS_Pin, GPIO_PIN_SET);
+	WRITE_PIN(RS_GPIO_Port, RS_Pin, 1);
     LCD_sendByte(data);
 }
 
 void LCD_sendNibble(uint8_t data) {
-    HAL_GPIO_WritePin(D4_GPIO_Port, D4_Pin, (data & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(D5_GPIO_Port, D5_Pin, (data & 0x02) ? GPIO_PIN_SET : GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(D6_GPIO_Port, D6_Pin, (data & 0x04) ? GPIO_PIN_SET : GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(D7_GPIO_Port, D7_Pin, (data & 0x08) ? GPIO_PIN_SET : GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(EN_GPIO_Port, EN_Pin, GPIO_PIN_SET);
-    HAL_Delay(1);
-    HAL_GPIO_WritePin(EN_GPIO_Port, EN_Pin, GPIO_PIN_RESET);
+//    HAL_GPIO_WritePin(D4_GPIO_Port, D4_Pin, (data & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	WRITE_PIN(D4_GPIO_Port, D4_Pin, !!(data & 0x01));
+//    HAL_GPIO_WritePin(D5_GPIO_Port, D5_Pin, (data & 0x02) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	WRITE_PIN(D5_GPIO_Port, D5_Pin, !!(data & 0x02));
+//    HAL_GPIO_WritePin(D6_GPIO_Port, D6_Pin, (data & 0x04) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	WRITE_PIN(D6_GPIO_Port, D6_Pin, !!(data & 0x04));
+//    HAL_GPIO_WritePin(D7_GPIO_Port, D7_Pin, (data & 0x08) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	WRITE_PIN(D7_GPIO_Port, D7_Pin, !!(data & 0x08));
+//    HAL_GPIO_WritePin(EN_GPIO_Port, EN_Pin, GPIO_PIN_SET);
+	WRITE_PIN(EN_GPIO_Port, EN_Pin, 1);
+//    HAL_Delay(1);
+	LCD_DelayMS(1);
+//    HAL_GPIO_WritePin(EN_GPIO_Port, EN_Pin, GPIO_PIN_RESET);
+	WRITE_PIN(EN_GPIO_Port, EN_Pin, 0);
 }
 
 void LCD_sendByte(uint8_t data) {
@@ -35,6 +44,9 @@ void LCD_puts(char * data) {
 }
 
 void LCD_init(){
+
+	LCD_GPIO_init();
+
     LCD_sendCmd(0x33); // Initialize controller
     LCD_sendCmd(0x32); // Set 4-bit mode
     LCD_sendCmd(0x28); // 4 bit, 2 line, 5x7
@@ -45,7 +57,8 @@ void LCD_init(){
 
 void LCD_clear(){
     LCD_sendCmd(0x01);
-    HAL_Delay(2);
+//    HAL_Delay(2);
+    LCD_DelayMS(2);
 }
 
 void LCD_setCursor(char row, char col){
