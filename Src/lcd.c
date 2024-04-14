@@ -26,7 +26,7 @@ void LCD_sendNibble(uint8_t data) {
 //    HAL_GPIO_WritePin(EN_GPIO_Port, EN_Pin, GPIO_PIN_SET);
 	WRITE_PIN(EN_GPIO_Port, EN_Pin, 1);
 //    HAL_Delay(1);
-	LCD_DelayMS(1);
+	LCD_DelayMS(10);
 //    HAL_GPIO_WritePin(EN_GPIO_Port, EN_Pin, GPIO_PIN_RESET);
 	WRITE_PIN(EN_GPIO_Port, EN_Pin, 0);
 }
@@ -58,7 +58,7 @@ void LCD_init(){
 void LCD_clear(){
     LCD_sendCmd(0x01);
 //    HAL_Delay(2);
-    LCD_DelayMS(2);
+    LCD_DelayMS(20);
 }
 
 void LCD_setCursor(char row, char col){
